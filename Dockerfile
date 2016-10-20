@@ -43,7 +43,7 @@ RUN git clone git://github.com/meta-qt5/meta-qt5 -b master-5.6 sources/meta-qt5
 ADD patch-meta-qt5 ${HOME}/Downloads/.
 ADD patch-meta-fsl-bsp-release ${HOME}/Downloads/.
 ADD patch-meta-openembedded ${HOME}/Downloads/.
-RUN ls ${HOEM}/Downloads/*
+RUN ls ${HOME}/Downloads/*
 ADD ls ${HOME}/Downloads/patch-meta-qt5/*
 RUN cd sources/meta-qt5 && git am ${HOME}/Downloads/patch-meta-qt5/*
 RUN cd sources/meta-fsl-bsp-release && git checkout fd63989 && git am ${HOME}/Downloads/patch-meta-fsl-bsp-release/*
