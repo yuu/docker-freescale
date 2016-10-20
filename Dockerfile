@@ -38,7 +38,7 @@ RUN $HOME/usrfs/bin/repo init -u git://git.freescale.com/imx/fsl-arm-yocto-bsp.g
 
 RUN $HOME/usrfs/bin/repo sync
 
-RUN git clone git://github.com/meta-qt5/meta-qt5 -b master-5.6 --single-branch sources/meta-qt5
+RUN git clone git://github.com/meta-qt5/meta-qt5 -b master-5.6 sources/meta-qt5
 
 ADD patch-meta-qt5 ${HOME}/Downloads/.
 ADD patch-meta-fsl-bsp-release ${HOME}/Downloads/.
