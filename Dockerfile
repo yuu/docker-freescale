@@ -38,4 +38,10 @@ RUN $HOME/usrfs/bin/repo init -u git://git.freescale.com/imx/fsl-arm-yocto-bsp.g
 
 RUN $HOME/usrfs/bin/repo sync
 
+RUN git clone git://github.com/meta-qt5/meta-qt5 -b krogoth sources/meta-qt5
+
+ADD patch-qt56.tar.bz2 ${HOME}/Downloads/.
+ADD patch.sh ${HOME}/Downloads/.
+RUN ${HOME}/Downloads/patch.sh
+
 CMD bash
