@@ -1,0 +1,63 @@
+From b258eb4735b0149998d789b7c68f0a1e6d6b257f Mon Sep 17 00:00:00 2001
+From: yuu <yuu3@users.noreply.github.com>
+Date: Thu, 4 Aug 2016 11:27:40 +0900
+Subject: [PATCH 3/3] Fix not include when not exist file
+
+---
+ ...0009-mkspec-Fix-linux-oe-g-platform-patch.patch | 31 ++++++++++++++++++++++
+ recipes-qt/qt5/qtbase_git.bb                       |  1 +
+ 2 files changed, 32 insertions(+)
+ create mode 100755 recipes-qt/qt5/qtbase/0009-mkspec-Fix-linux-oe-g-platform-patch.patch
+
+diff --git a/recipes-qt/qt5/qtbase/0009-mkspec-Fix-linux-oe-g-platform-patch.patch b/recipes-qt/qt5/qtbase/0009-mkspec-Fix-linux-oe-g-platform-patch.patch
+new file mode 100755
+index 0000000..6f4e809
+--- /dev/null
++++ b/recipes-qt/qt5/qtbase/0009-mkspec-Fix-linux-oe-g-platform-patch.patch
+@@ -0,0 +1,31 @@
++From f66ab8242826049aa999589fc614ebedd7dd9ed8 Mon Sep 17 00:00:00 2001
++From: IMX6 DEV <imx6@imx6-virtual-machine.(none)>
++Date: Tue, 19 Apr 2016 16:01:06 +0800
++Subject: [PATCH 9/9] mkspec: Fix linux-oe-g-platform patch
++MIME-Version: 1.0
++Content-Type: text/plain; charset=UTF-8
++Content-Transfer-Encoding: 8bit
++
++oe-device-extra.priがない場合がある
++Error: Cannot read /opt/poky/1.7/sysroots/cortexa9hf-vfp-neon-poky-linux-gnueabi/usr/lib/qt5/mkspecs/oe-device-extra.pri: No such file or directory
++---
++ mkspecs/linux-oe-g++/qmake.conf |    4 +++-
++ 1 file changed, 3 insertions(+), 1 deletion(-)
++
++diff --git a/mkspecs/linux-oe-g++/qmake.conf b/mkspecs/linux-oe-g++/qmake.conf
++index 311ba04..de279d2 100644
++--- a/mkspecs/linux-oe-g++/qmake.conf
+++++ b/mkspecs/linux-oe-g++/qmake.conf
++@@ -37,6 +37,8 @@ QMAKE_LINK_C_SHLIB = $(OE_QMAKE_LINK)
++ # for the SDK
++ isEmpty(QMAKE_QT_CONFIG):QMAKE_QT_CONFIG = $(OE_QMAKE_QT_CONFIG)
++ 
++-include(../oe-device-extra.pri)
+++exists(../oe-device-extra.pri) {
+++    include(../oe-device-extra.pri)
+++}
++ 
++ load(qt_config)
++-- 
++1.7.9.5
++
+diff --git a/recipes-qt/qt5/qtbase_git.bb b/recipes-qt/qt5/qtbase_git.bb
+index f6fcde7..2a212eb 100644
+--- a/recipes-qt/qt5/qtbase_git.bb
++++ b/recipes-qt/qt5/qtbase_git.bb
+@@ -20,6 +20,7 @@ SRC_URI += "\
+     file://0006-QOpenGLPaintDevice-sub-area-support.patch \
+     file://0007-linux-oe-g-Invert-conditional-for-defining-QT_SOCKLE.patch \
+     file://0008-configure-paths-for-target-qmake-properly.patch \
++    file://0009-mkspec-Fix-linux-oe-g-platform-patch.patch \
+ "
+ 
+ DEPENDS += "qtbase-native"
+-- 
+2.7.4
+

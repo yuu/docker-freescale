@@ -1,0 +1,86 @@
+From 0605d6c669a9fd1d6c16894974463173c8b7b065 Mon Sep 17 00:00:00 2001
+From: yuu <yuu3@users.noreply.github.com>
+Date: Mon, 18 Jul 2016 03:02:50 +0900
+Subject: [PATCH] We can use bitbake of old version
+
+---
+ meta-oe/classes/autotools-brokensep.bbclass |  5 +++++
+ meta-oe/classes/bluetooth.bbclass           | 14 ++++++++++++++
+ meta-oe/classes/python3native.bbclass       | 13 +++++++++++++
+ meta-oe/classes/remove-libtool.bbclass      | 11 +++++++++++
+ 4 files changed, 43 insertions(+)
+ create mode 100644 meta-oe/classes/autotools-brokensep.bbclass
+ create mode 100644 meta-oe/classes/bluetooth.bbclass
+ create mode 100644 meta-oe/classes/python3native.bbclass
+ create mode 100644 meta-oe/classes/remove-libtool.bbclass
+
+diff --git a/meta-oe/classes/autotools-brokensep.bbclass b/meta-oe/classes/autotools-brokensep.bbclass
+new file mode 100644
+index 0000000..71cf97a
+--- /dev/null
++++ b/meta-oe/classes/autotools-brokensep.bbclass
+@@ -0,0 +1,5 @@
++# Autotools class for recipes where separate build dir doesn't work
++# Ideally we should fix software so it does work. Standard autotools supports
++# this.
++inherit autotools
++B = "${S}"
+diff --git a/meta-oe/classes/bluetooth.bbclass b/meta-oe/classes/bluetooth.bbclass
+new file mode 100644
+index 0000000..f88b4ae
+--- /dev/null
++++ b/meta-oe/classes/bluetooth.bbclass
+@@ -0,0 +1,14 @@
++# Avoid code duplication in bluetooth-dependent recipes.
++
++# Define a variable that expands to the recipe (package) providing core
++# bluetooth support on the platform:
++# "" if bluetooth is not in DISTRO_FEATURES
++# else "bluez5" if bluez5 is in DISTRO_FEATURES
++# else "bluez4"
++
++# Use this with:
++#  inherit bluetooth
++#  PACKAGECONFIG ??= "${@bb.utils.contains('DISTRO_FEATURES', 'bluetooth', '${BLUEZ}', '', d)}
++#  PACKAGECONFIG[bluez4] = "--enable-bluez4,--disable-bluez4,bluez4"
++
++BLUEZ ?= "${@bb.utils.contains('DISTRO_FEATURES', 'bluetooth', bb.utils.contains('DISTRO_FEATURES', 'bluez5', 'bluez5', 'bluez4', d), '', d)}"
+diff --git a/meta-oe/classes/python3native.bbclass b/meta-oe/classes/python3native.bbclass
+new file mode 100644
+index 0000000..ef468b3
+--- /dev/null
++++ b/meta-oe/classes/python3native.bbclass
+@@ -0,0 +1,13 @@
++inherit python3-dir
++
++PYTHON="${STAGING_BINDIR_NATIVE}/${PYTHON_PN}-native/${PYTHON_PN}"
++EXTRANATIVEPATH += "${PYTHON_PN}-native"
++DEPENDS_append = " ${PYTHON_PN}-native "
++
++# python-config and other scripts are using distutils modules
++# which we patch to access these variables
++export STAGING_INCDIR
++export STAGING_LIBDIR
++
++# autoconf macros will use their internal default preference otherwise
++export PYTHON
+diff --git a/meta-oe/classes/remove-libtool.bbclass b/meta-oe/classes/remove-libtool.bbclass
+new file mode 100644
+index 0000000..3fd0cd5
+--- /dev/null
++++ b/meta-oe/classes/remove-libtool.bbclass
+@@ -0,0 +1,11 @@
++# This class removes libtool .la files after do_install
++
++REMOVE_LIBTOOL_LA ?= "1"
++
++remove_libtool_la() {
++	if [ "${REMOVE_LIBTOOL_LA}" != "0" ]; then
++		find "${D}" -ignore_readdir_race -name "*.la" -delete
++	fi
++}
++
++do_install[postfuncs] += "remove_libtool_la"
+-- 
+2.7.4
+
