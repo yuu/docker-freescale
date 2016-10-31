@@ -34,7 +34,7 @@ RUN sudo chmod +x $HOME/usrfs/bin/repo
 
 WORKDIR $HOME/work/fsl-release-bsp
 RUN sudo chown -R $USERNAME $HOME/work
-RUN $HOME/usrfs/bin/repo init -u git://git.freescale.com/imx/fsl-arm-yocto-bsp.git -b imx-3.10.17-1.0.0_ga
+RUN $HOME/usrfs/bin/repo init -u git://git.freescale.com/imx/fsl-arm-yocto-bsp.git -b imx-3.14.52-1.1.0_ga
 
 RUN $HOME/usrfs/bin/repo sync
 
