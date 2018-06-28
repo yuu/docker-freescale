@@ -42,7 +42,8 @@ This project is encapsulate build environment of Yocto for freescale/ARM in Dock
 local.conf
 ```
 PACKAGE_CLASSES = "package_ipk"
-IMAGE_INSTALL_append = "vim git opkg fontconfig"
+IMAGE_INSTALL_append = "vim git fontconfig"
+IMAGE_FEATURES += "package-management"
 
 DISTRO_FEATURES_append = " systemd"
 VIRTUAL-RUNTIME_init_manager = "systemd"
